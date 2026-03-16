@@ -10,9 +10,17 @@ app.use(express.json());
 app.use(logger);
 // app.use(checkApiKey);
 
+
+
 // Routes
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
+
 const userRoutes = require('./routes/userRoutes');
 app.use('/users', userRoutes);
+app.use("/projects", require("./routes/projectRoutes"));
+app.use("/tasks", require("./routes/taskRoutes"));
 
 // 404 middleware
 app.use((req, res) => res.status(404).json({ message: "Route not found" }));

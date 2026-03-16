@@ -1,38 +1,64 @@
-let users = [];
-let nextId = 1;
 
-const getUsers = (req, res) => {
-  res.status(200).json(users);
+
+const User = require("../models/User");
+
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
 };
 
-const createUser = (req, res) => {
-  const { name, role } = req.body;
-  if (!name || !role) return res.status(400).json({ message: "Name and role required" });
+const createUser = async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json(user);
+  } catch (error) {
 
-  const newUser = { id: nextId++, name, role };
-  users.push(newUser);
-  res.status(201).json(newUser);
+    if(error.code === 11000){
+      return res.status(400).json({message:"Email already exists"});
+    }
+
+    res.status(500).json({message:error.message});
+  }
 };
 
-const updateUser = (req, res) => {
-  const userId = parseInt(req.params.id);
-  const index = users.findIndex(u => u.id === userId);
-  if (index === -1) return res.status(404).json({ message: "User not found" });
+const updateUser = async (req,res)=>{
+  try{
 
-  const { name, role } = req.body;
-  if (!name || !role) return res.status(400).json({ message: "Name and role required" });
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {new:true}
+    );
 
-  users[index] = { id: userId, name, role };
-  res.status(200).json(users[index]);
-};
+    if(!user){
+      return res.status(404).json({message:"User not found"});
+    }
 
-const deleteUser = (req, res) => {
-  const userId = parseInt(req.params.id);
-  const index = users.findIndex(u => u.id === userId);
-  if (index === -1) return res.status(404).json({ message: "User not found" });
+    res.json(user);
 
-  const deletedUser = users.splice(index, 1)[0];
-  res.status(200).json(deletedUser);
-};
+  }catch(error){
+    res.status(500).json({message:error.message});
+  }
+}
+
+const deleteUser = async (req,res)=>{
+  try{
+
+    const user = await User.findByIdAndDelete(req.params.id);
+
+    if(!user){
+      return res.status(404).json({message:"User not found"});
+    }
+
+    res.json({message:"User deleted"});
+
+  }catch(error){
+    res.status(500).json({message:error.message});
+  }
+}
 
 module.exports = { getUsers, createUser, updateUser, deleteUser };
