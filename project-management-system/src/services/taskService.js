@@ -1,29 +1,49 @@
-const taskService = require("../services/taskService");
-const asyncWrapper = require("../utils/asyncWrapper");
+const Task = require("../models/Tasks");
+const AppError = require("../utils/AppError");
 
-const getTasks = asyncWrapper(async (req, res) => {
-  const tasks = await taskService.getTasks();
-  res.json({ status: "success", data: tasks });
-});
+// GET all tasks
+const getTasks = async () => {
+  return await Task.find()
+    .populate("project")
+    .populate("assignedTo");
+};
 
-const getTaskById = asyncWrapper(async (req, res) => {
-  const task = await taskService.getTaskById(req.params.id);
-  res.json({ status: "success", data: task });
-});
+// GET task by ID
+const getTaskById = async (id) => {
+  const task = await Task.findById(id)
+    .populate("project")
+    .populate("assignedTo");
 
-const createTask = asyncWrapper(async (req, res) => {
-  const task = await taskService.createTask(req.body);
-  res.status(201).json({ status: "success", data: task });
-});
+  if (!task) throw new AppError("Task not found", 404);
+  return task;
+};
 
-const updateTask = asyncWrapper(async (req, res) => {
-  const task = await taskService.updateTask(req.params.id, req.body);
-  res.json({ status: "success", data: task });
-});
+// CREATE task
+const createTask = async (data) => {
+  const task = await Task.create(data);
+  return task;
+};
 
-const deleteTask = asyncWrapper(async (req, res) => {
-  const result = await taskService.deleteTask(req.params.id);
-  res.json({ status: "success", data: result });
-});
+// UPDATE task
+const updateTask = async (id, data) => {
+  const task = await Task.findByIdAndUpdate(id, data, { new: true });
 
-module.exports = { getTasks, getTaskById, createTask, updateTask, deleteTask };
+  if (!task) throw new AppError("Task not found", 404);
+  return task;
+};
+
+// DELETE task
+const deleteTask = async (id) => {
+  const task = await Task.findByIdAndDelete(id);
+
+  if (!task) throw new AppError("Task not found", 404);
+  return { message: "Task deleted" };
+};
+
+module.exports = {
+  getTasks,
+  getTaskById,
+  createTask,
+  updateTask,
+  deleteTask,
+};

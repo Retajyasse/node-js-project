@@ -1,83 +1,46 @@
-const Task = require("../models/Tasks");
+const taskService = require("../services/taskService");
+const asyncWrapper = require("../utils/asyncWrapper");
 
 // GET all tasks
-const getTasks = async (req, res) => {
-  try {
-    const tasks = await Task.find()
-      .populate("project")
-      .populate("assignedTo");
-
-    res.json(tasks);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+const getTasks = asyncWrapper(async (req, res) => {
+  const tasks = await taskService.getTasks();
+  res.json({ status: "success", data: tasks });
+});
 
 // GET single task
-const getTaskById = async (req, res) => {
-  try {
-    const task = await Task.findById(req.params.id)
-      .populate("project")
-      .populate("assignedTo");
-
-    if (!task) {
-      return res.status(404).json({ message: "Task not found" });
-    }
-
-    res.json(task);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+const getTaskById = asyncWrapper(async (req, res) => {
+  const task = await taskService.getTaskById(req.params.id);
+  res.json({ status: "success", data: task });
+});
 
 // CREATE task
-const createTask = async (req, res) => {
-  try {
-    const task = await Task.create(req.body);
-    res.status(201).json(task);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+const createTask = asyncWrapper(async (req, res) => {
+  const task = await taskService.createTask(req.body);
+  const io = req.app.get("io");
+  io.emit("taskCreated", task);
+  res.status(201).json({ status: "success", data: task });
+});
 
 // UPDATE task
-const updateTask = async (req, res) => {
-  try {
-    const task = await Task.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-
-    if (!task) {
-      return res.status(404).json({ message: "Task not found" });
-    }
-
-    res.json(task);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+const updateTask = asyncWrapper(async (req, res) => {
+  const task = await taskService.updateTask(req.params.id, req.body);
+  const io = req.app.get("io");
+  io.emit("taskUpdated", task);
+  res.json({ status: "success", data: task });
+});
 
 // DELETE task
-const deleteTask = async (req, res) => {
-  try {
-    const task = await Task.findByIdAndDelete(req.params.id);
-
-    if (!task) {
-      return res.status(404).json({ message: "Task not found" });
-    }
-
-    res.json({ message: "Task deleted" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+const deleteTask = asyncWrapper(async (req, res) => {
+  const result = await taskService.deleteTask(req.params.id);
+  const io = req.app.get("io");
+  io.emit("taskDeleted", req.params.id);
+  res.json({ status: "success", data: result });
+});
 
 module.exports = {
   getTasks,
   getTaskById,
   createTask,
   updateTask,
-  deleteTask
+  deleteTask,
 };

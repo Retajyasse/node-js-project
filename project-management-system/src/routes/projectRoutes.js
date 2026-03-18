@@ -1,4 +1,5 @@
 const express = require("express");
+const checkApiKey = require("../middlewares/checkApiKey");
 
 const {
   getProjects,
@@ -7,13 +8,14 @@ const {
   updateProject,
   deleteProject
 } = require("../controllers/projectController");
+const protect = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", getProjects);
-router.get("/:id", getProjectById);
-router.post("/", createProject);
-router.put("/:id", updateProject);
-router.delete("/:id", deleteProject);
+router.get("/", checkApiKey, getProjects);
+router.get("/:id", checkApiKey, getProjectById);
+router.post("/", protect, createProject);
+router.put("/:id", protect, updateProject);
+router.delete("/:id", protect, deleteProject);
 
 module.exports = router;

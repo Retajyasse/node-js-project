@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket Test</title>
+</head>
+<body>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+<script>
+  const socket = io("http://localhost:3000");
+
+  socket.on("taskCreated", (data) => {
+    console.log("New Task:", data);
+  });
+
+  socket.on("taskUpdated", (data) => {
+    console.log("Task Updated:", data);
+  });
+
+  socket.on("taskDeleted", (id) => {
+    console.log("Task Deleted:", id);
+  });
+</script>
+
+</body>
+</html>

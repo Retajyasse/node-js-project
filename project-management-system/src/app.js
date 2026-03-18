@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(logger);
-// app.use(checkApiKey);
+
 
 // Routes
 app.get("/", (req, res) => {
