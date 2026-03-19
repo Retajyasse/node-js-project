@@ -24,7 +24,7 @@ const errorHandler = (err, req, res, next) => {
     message = "Invalid token";
   }
 
-  // 🟡 JWT expired
+  //  JWT expired
   if (err.name === "TokenExpiredError") {
     statusCode = 401;
     message = "Token expired";

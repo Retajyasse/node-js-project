@@ -2,19 +2,18 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const AppError = require("../utils/AppError");
 
-// جلب كل اليوزرز
 const getUsers = async () => {
-  return await User.find().select("-password"); // مانعرضش الباسورد
+  return await User.find().select("-password"); 
 };
 
-// جلب يوزر واحد
+
 const getUserById = async (id) => {
   const user = await User.findById(id).select("-password");
   if (!user) throw new AppError("User not found", 404);
   return user;
 };
 
-// إنشاء يوزر جديد
+
 const createUser = async ({ name, email, password }) => {
   if (!name || !email || !password) {
     throw new AppError("All fields are required", 400);
@@ -38,7 +37,7 @@ const createUser = async ({ name, email, password }) => {
   };
 };
 
-// تعديل يوزر
+
 const updateUser = async (id, data) => {
   if (data.password) {
     data.password = await bcrypt.hash(data.password, 10);
@@ -50,7 +49,7 @@ const updateUser = async (id, data) => {
   return user;
 };
 
-// حذف يوزر
+
 const deleteUser = async (id) => {
   const user = await User.findByIdAndDelete(id);
   if (!user) throw new AppError("User not found", 404);
