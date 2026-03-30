@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { projectAPI, userAPI } from '../api'; // استيراد الـ API اللي عملناه
+import { projectAPI, userAPI } from '../api'; 
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -9,7 +9,7 @@ const Projects = () => {
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  // الحالة للمشروع (الجديد أو اللي بنعدله)
+
   const [formData, setFormData] = useState({
     id: '',
     name: '',
@@ -18,7 +18,7 @@ const Projects = () => {
     assignedTo: ''
   });
 
-  // 1. جلب البيانات عند فتح الصفحة
+  
   const loadData = async () => {
     try {
       setLoading(true);
@@ -40,7 +40,7 @@ const Projects = () => {
     loadData();
   }, []);
 
-  // 2. معالجة الإضافة والتعديل
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -58,13 +58,13 @@ const Projects = () => {
       }
 
       setShowModal(false);
-      loadData(); // تحديث القائمة بعد العملية
+      loadData(); 
     } catch (err) {
       alert(err.response?.data?.message || "Operation failed");
     }
   };
 
-  // 3. حذف مشروع
+ 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this project?")) {
       try {
@@ -76,7 +76,7 @@ const Projects = () => {
     }
   };
 
-  // 4. تحضير المودال للتعديل
+  
   const openEditModal = (p) => {
     setFormData({
       id: p._id,
@@ -174,7 +174,7 @@ const Projects = () => {
         </div>
       </div>
 
-      {/* Modal - New/Edit Project */}
+      {/*New/Edit Project */}
       {showModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-[#161b22] w-full max-w-md p-8 rounded-3xl border border-gray-700 shadow-2xl transform transition-all">

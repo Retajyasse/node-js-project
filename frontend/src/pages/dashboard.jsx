@@ -39,7 +39,7 @@ const Dashboard = () => {
 
   useEffect(() => { loadStats(); }, []);
 
-  // حساب النسبة المئوية لشريط التوزيع (Progress Bar)
+  
   const calculateWidth = (count) => {
     if (stats.totalTasks === 0) return "0%";
     return `${(count / stats.totalTasks) * 100}%`;
@@ -47,7 +47,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-[#0d0f14] text-white">
-      {/* Sidebar الموحد */}
+      {}
       <div className="w-64 bg-[#0d0f14] border-r border-gray-800 p-6 hidden md:block">
         <div className="text-[#7c5dfa] text-2xl font-bold mb-10 flex items-center gap-2">
           <i className="fas fa-bolt"></i> TaskFlow
@@ -68,14 +68,14 @@ const Dashboard = () => {
         </nav>
       </div>
 
-      {/* Main Content */}
+      {}
       <div className="flex-1 p-8 bg-[#090b0e]">
         <header className="mb-10">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-gray-500 text-sm">Overview of your workspace</p>
         </header>
 
-        {/* Stats Cards Grid */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {/* Projects Card */}
           <div className="bg-[#161b22] p-6 rounded-2xl border border-gray-800 flex justify-between items-center">

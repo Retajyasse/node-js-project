@@ -1,15 +1,14 @@
 import axios from 'axios';
 
-// 1. إعداد الـ Instance الأساسي
 const API_INSTANCE = axios.create({
     baseURL: 'http://localhost:3000',
     headers: {
         'Content-Type': 'application/json',
-        'x-api-key': 'iti-node-project' // حطي الـ Key بتاعك هنا
+        'x-api-key': 'iti-node-project' 
     }
 });
 
-// 2. الـ Interceptor لإضافة التوكن تلقائياً
+
 API_INSTANCE.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -18,8 +17,7 @@ API_INSTANCE.interceptors.request.use((config) => {
     return config;
 });
 
-// 3. تعريف الـ APIs (Projects, Users, Tasks)
-// بنستخدم الـ API_INSTANCE اللي عرفناه فوق
+
 
 export const projectAPI = {
     getAll: () => API_INSTANCE.get('/projects'),

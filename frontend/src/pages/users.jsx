@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { userAPI } from '../api'; // استيراد الـ API اللي عملناه
-import { NavLink } from 'react-router-dom'; // استيراد NavLink للروابط في السايدبار
-
+import { userAPI } from '../api'; 
+import { NavLink } from 'react-router-dom'; 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  // الحالة للمستخدم الحالي (للفورم)
   const [formData, setFormData] = useState({
     id: '',
     name: '',
@@ -16,7 +14,6 @@ const Users = () => {
     password: '',
   });
 
-  // 1. جلب بيانات المستخدمين
   const loadData = async () => {
     try {
       setLoading(true);
@@ -34,25 +31,23 @@ const Users = () => {
     loadData();
   }, []);
 
-  // 2. معالجة الإضافة والتعديل
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (isEditing) {
-        // في التعديل، الباك اند في userservice.js بيقبل الـ password بس لو اتبعتت.
-        // لو اتبعتت فاضية، مش هيغير الباسورد القديمة.
+      
         const updatePayload = {
             name: formData.name,
             email: formData.email,
         };
-        // ضيفي الباسورد بس لو اليوزر كتب حاجة جديدة
+       
         if(formData.password.trim() !== '') {
             updatePayload.password = formData.password;
         }
 
         await userAPI.update(formData.id, updatePayload);
       } else {
-        // في الإضافة، الـ password مطلوبة (required)
+      
         const createPayload = {
             name: formData.name,
             email: formData.email,
@@ -62,13 +57,13 @@ const Users = () => {
       }
 
       setShowModal(false);
-      loadData(); // تحديث القائمة
+      loadData(); 
     } catch (err) {
       alert(err.response?.data?.message || "Operation failed");
     }
   };
 
-  // 3. حذف مستخدم
+ 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure? This will delete the user permanently.")) {
       try {
@@ -80,13 +75,12 @@ const Users = () => {
     }
   };
 
-  // 4. تحضير المودال للتعديل
   const openEditModal = (u) => {
     setFormData({
       id: u._id,
       name: u.name,
       email: u.email,
-      password: '', // الباسورد بتبدأ فاضية في التعديل
+      password: '', 
     });
     setIsEditing(true);
     setShowModal(true);
@@ -97,7 +91,7 @@ const Users = () => {
   return (
     <div className="flex min-h-screen bg-[#0d0f14] text-white font-sans">
       
-      {/* Sidebar - تقدري تنسخيه من صفحة الـ Projects */}
+    
       <div className="w-64 bg-[#0d0f14] border-r border-gray-800 p-6 hidden md:block">
         <div className="text-[#7c5dfa] text-2xl font-bold mb-10 flex items-center gap-2">
           <i className="fas fa-bolt"></i> TaskFlow
@@ -129,7 +123,7 @@ const Users = () => {
 </nav>
       </div>
 
-      {/* Main Content */}
+    
       <div className="flex-1 p-8 bg-[#090b0e]">
         <div className="flex justify-between items-center mb-10">
           <div>
@@ -144,7 +138,7 @@ const Users = () => {
           </button>
         </div>
 
-        {/* Users Table */}
+     
         <div className="bg-[#161b22] rounded-2xl border border-gray-800 overflow-hidden shadow-xl">
           <table className="w-full text-sm">
             <thead className="border-b border-gray-800 text-gray-500 text-xs uppercase font-medium">
@@ -166,7 +160,8 @@ const Users = () => {
                   </td>
                   <td className="p-5 text-gray-400 font-mono tracking-tight">{u.email}</td>
                   <td className="p-5">
-                    {/* بما إن مفيش Role في الباك اند، بنعرض "User" بشكل افتراضي */}
+                  
+
                     <span className="text-[10px] uppercase font-bold px-2 py-1 rounded bg-gray-800 text-gray-400">User</span>
                   </td>
                   <td className="p-5 text-gray-500 text-base">
@@ -182,7 +177,7 @@ const Users = () => {
         </div>
       </div>
 
-      {/* Modal - New/Edit User */}
+     
       {showModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-[#161b22] w-full max-w-md p-8 rounded-3xl border border-gray-700 shadow-2xl">
@@ -222,7 +217,7 @@ const Users = () => {
                   className="w-full bg-[#0d1117] border border-gray-700 rounded-xl p-3 outline-none focus:border-[#7c5dfa] transition-all"
                   value={formData.password}
                   onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  required={!isEditing} // مطلوب بس في الإضافة
+                  required={!isEditing} 
                   placeholder="••••••••"
                 />
               </div>
